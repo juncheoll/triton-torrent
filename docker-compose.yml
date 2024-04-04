@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  triton-torrent:
+    container_name: triton-torrent
+    image: ./Dockerfile # 이미지 이름을 필요에 따라 변경하세요.
+    volumes:
+      - ./../models:/torrent/models # 마운트 경로 설정
+    networks:
+      - triton
+    tty: true
