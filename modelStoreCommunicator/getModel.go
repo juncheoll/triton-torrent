@@ -33,7 +33,7 @@ func (pr *ProgressReader) Read(p []byte) (int, error) {
 
 /* downloading the model from the Model Store. */
 func GetModel(provider string, model string, version string) ([]byte, error) {
-	log.Println("Starting model download.")
+	log.Println("Starting torrent file download.")
 	url := fmt.Sprintf("http://%s/getModel?id=%s&model=%s&version=%s", setting.ModelStoreUrl, provider, model, version)
 
 	// Sending a download request to the model store.

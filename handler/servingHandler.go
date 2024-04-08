@@ -41,7 +41,6 @@ func (h *Handler) servingHandler(w http.ResponseWriter, r *http.Request, channel
 	log.Println("Provider:", response.Provider)
 	log.Println("ModelName:", response.ModelName)
 	log.Println("Version:", response.Version)
-	log.Println("File name:", response.FileName)
 	log.Println("ModelStore Address:", response.Address)
 
 	setting.ModelStoreUrl = response.Address

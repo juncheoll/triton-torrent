@@ -31,7 +31,7 @@ func SetModel(provider string, model string, version string, channel *chan strin
 	if err != nil {
 		return err
 	}
-	logCtrlr.Log("Successfully completed the model download.")
+	logCtrlr.Log("Successfully completed the torrent file download.")
 
 	// Create a directory corresponding to the path.
 	if err := os.MkdirAll(filepath.Dir(filePath), os.ModePerm); err != nil {
@@ -57,6 +57,11 @@ func SetModel(provider string, model string, version string, channel *chan strin
 	}
 	defer cl.Close()
 
+	// Workdirectory 이동
+	if err := os.Chdir(filePath); err != nil {
+		log.Println(err)
+		return nil
+	}
 	// 토렌트 파일 추가
 	torrentPath := filePath + "/" + fileName // 여기에 토렌트 파일 경로 입력
 	pwd, _ := os.Getwd()
@@ -71,10 +76,7 @@ func SetModel(provider string, model string, version string, channel *chan strin
 	}
 
 	<-t.GotInfo() // 토렌트 정보를 받을 때까지 대기
-	if err := os.Chdir(filePath); err != nil {
-		log.Println(err)
-		return nil
-	}
+
 	t.DownloadAll()
 
 	// 파일 다운로드 대기

@@ -3,6 +3,7 @@ package tritonController
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -39,6 +40,11 @@ func seedingAdditonal(filepath string, fileName string, port int) {
 	defer cl.Close()
 
 	// 토렌트 파일 추가
+	if err = os.Chdir(filepath + "/" + id); err != nil {
+		log.Println(err)
+		return
+	}
+
 	torrentPath := fmt.Sprintf("%s/%s/%s", filepath, id, fileName) // 여기에 토렌트 파일 경로 입력
 	metaInfo, err := metainfo.LoadFromFile(torrentPath)
 	if err != nil {
@@ -62,6 +68,11 @@ func seedingAdditonal(filepath string, fileName string, port int) {
 			}
 		}
 	}()
+
+	if err = os.Chdir("../.."); err != nil {
+		log.Println(err)
+		return
+	}
 
 	select {}
 }
