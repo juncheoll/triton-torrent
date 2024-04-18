@@ -45,10 +45,19 @@ func SetModel(provider string, model string, version string, channel *chan strin
 	}
 	file.Write(modelFile)
 
+	// Workdirectory 이동
+	if err := os.Chdir(filePath); err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	/*--------------------ModelStore 한테 토렌트 파일 받아와서 저장 완료--------------*/
+
 	// File Download by Torrent
 	// 토렌트 클라이언트 설정
 	cfg := torrent.NewDefaultClientConfig()
-	cfg.Seed = true // 시딩 활성화
+	//cfg.Seed = true // 시딩 활성화
+	cfg.ListenPort = 9000
 
 	// 토렌트 클라이언트 생성
 	cl, err := torrent.NewClient(cfg)
@@ -57,11 +66,6 @@ func SetModel(provider string, model string, version string, channel *chan strin
 	}
 	defer cl.Close()
 
-	// Workdirectory 이동
-	if err := os.Chdir(filePath); err != nil {
-		log.Println(err)
-		return nil
-	}
 	// 토렌트 파일 추가
 	torrentPath := filePath + "/" + fileName // 여기에 토렌트 파일 경로 입력
 	pwd, _ := os.Getwd()
@@ -88,10 +92,12 @@ func SetModel(provider string, model string, version string, channel *chan strin
 	log.Printf("Downloaded %s", t.Name())
 	*channel <- fileName
 
-	if err := os.Chdir("../"); err != nil {
-		log.Println(err)
-		return nil
-	}
+	/*
+		if err := os.Chdir("../"); err != nil {
+			log.Println(err)
+			return nil
+		}
+	*/
 
 	return nil
 }

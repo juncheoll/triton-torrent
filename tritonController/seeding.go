@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 
 // 다운로드가 완료된 파일을 채널로 입력받아서 채널입력이 올때마다 시딩 리스트 추가해서 시딩
 func Seeding(filepath string, channel *chan string) {
-	port := 65000
+	port := 10000
 	for {
 		select {
 		case fileName := <-*channel:
@@ -26,12 +27,18 @@ func Seeding(filepath string, channel *chan string) {
 func seedingAdditonal(filepath string, fileName string, port int) {
 	// 토렌트 클라이언트 설정
 	cfg := torrent.NewDefaultClientConfig()
-	cfg.Seed = true        // 시딩 활성화
-	cfg.DataDir = filepath // 다운로드된 파일이 위치한 디렉토리
-	cfg.ListenPort = port
-
+	cfg.Seed = true // 시딩 활성화
+	path, _ := os.Getwd()
+	log.Println("now:", path)
 	parts := strings.Split(fileName, "@")
 	id := parts[0]
+	cfg.DataDir = filepath + "/" + id // 다운로드된 파일이 위치한 디렉토리
+
+	cfg.DisableIPv6 = true
+	cfg.SetListenAddr("210.125.31.176:" + strconv.Itoa(port))
+
+	//cfg.SetListenAddr("210.125.31.176:" + strconv.Itoa(port))
+
 	// 토렌트 클라이언트 생성
 	cl, err := torrent.NewClient(cfg)
 	if err != nil {
@@ -40,12 +47,15 @@ func seedingAdditonal(filepath string, fileName string, port int) {
 	defer cl.Close()
 
 	// 토렌트 파일 추가
-	if err = os.Chdir(filepath + "/" + id); err != nil {
-		log.Println(err)
-		return
-	}
+	// if err = os.Chdir(filepath + "/" + id); err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
 
 	torrentPath := fmt.Sprintf("%s/%s/%s", filepath, id, fileName) // 여기에 토렌트 파일 경로 입력
+	log.Println("torrentPath:", torrentPath)
+	path, _ = os.Getwd()
+	log.Println("now:", path)
 	metaInfo, err := metainfo.LoadFromFile(torrentPath)
 	if err != nil {
 		log.Fatalf("error loading torrent file: %s", err)
@@ -58,6 +68,8 @@ func seedingAdditonal(filepath string, fileName string, port int) {
 	// 시딩을 위해 클라이언트를 계속 실행
 	log.Printf("Seeding %s", t.Name())
 
+	log.Println("Seeding():", t.Seeding())
+
 	go func() {
 		for range time.Tick(10 * time.Second) {
 			// 여기서 추가적으로 특정 조건을 확인하고 메시지를 출력할 수 있음
@@ -69,10 +81,10 @@ func seedingAdditonal(filepath string, fileName string, port int) {
 		}
 	}()
 
-	if err = os.Chdir("../.."); err != nil {
-		log.Println(err)
-		return
-	}
+	// if err = os.Chdir("../.."); err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
 
 	select {}
 }

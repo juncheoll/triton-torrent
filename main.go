@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/juncheoll/triton-torrent/handler"
 	"github.com/juncheoll/triton-torrent/setting"
@@ -24,5 +26,14 @@ func startServer() {
 }
 
 func main() {
+
+	pwd, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	setting.ModelsPath = pwd + "/../models"
+	println(setting.ModelsPath)
+
 	startServer()
 }
