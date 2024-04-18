@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/anacrolix/torrent"
@@ -89,7 +90,8 @@ func SetModel(provider string, model string, version string, channel *chan strin
 		peers := t.PeerConns()
 		if len(peers) != 0 {
 			for index, peer := range peers {
-				log.Println("Peer", index, ":", peer.RemoteAddr)
+				parts := strings.Split(peer.RemoteAddr.String(), ":")
+				log.Println("Peer", index, ":", parts[0])
 			}
 		}
 	}
