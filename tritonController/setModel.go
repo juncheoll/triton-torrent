@@ -86,7 +86,12 @@ func SetModel(provider string, model string, version string, channel *chan strin
 	// 파일 다운로드 대기
 	for !t.Complete.Bool() {
 		time.Sleep(time.Second * 1)
-		log.Printf("t.Complete.Bool")
+		peers := t.PeerConns()
+		if len(peers) != 0 {
+			for index, peer := range peers {
+				log.Println("Peer", index, ":", peer.RemoteAddr)
+			}
+		}
 	}
 
 	log.Printf("Downloaded %s", t.Name())
