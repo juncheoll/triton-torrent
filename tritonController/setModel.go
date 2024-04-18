@@ -89,9 +89,18 @@ func SetModel(provider string, model string, version string, channel *chan strin
 		time.Sleep(time.Second * 1)
 		peers := t.PeerConns()
 		if len(peers) != 0 {
+			var peerMap map[string]bool = make(map[string]bool)
 			for _, peer := range peers {
 				parts := strings.Split(peer.RemoteAddr.String(), ":")
-				log.Println("Peer:", parts[0])
+				peerMap[parts[0]] = true
+			}
+			log.Printf("------------PeerNum(%d)--------------\n", len(peerMap))
+			for addr, _ := range peerMap {
+				log.Println("Peer IP:", addr)
+			}
+			log.Println("-----------------------------------")
+			for key := range peerMap {
+				delete(peerMap, key)
 			}
 		}
 	}
