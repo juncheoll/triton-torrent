@@ -89,9 +89,9 @@ func SetModel(provider string, model string, version string, channel *chan strin
 		time.Sleep(time.Second * 1)
 		peers := t.PeerConns()
 		if len(peers) != 0 {
-			for index, peer := range peers {
+			for _, peer := range peers {
 				parts := strings.Split(peer.RemoteAddr.String(), ":")
-				log.Println("Peer", index, ":", parts[0])
+				log.Println("Peer:", parts[0])
 			}
 		}
 	}
