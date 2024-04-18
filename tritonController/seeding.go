@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -33,11 +32,7 @@ func seedingAdditonal(filepath string, fileName string, port int) {
 	parts := strings.Split(fileName, "@")
 	id := parts[0]
 	cfg.DataDir = filepath + "/" + id // 다운로드된 파일이 위치한 디렉토리
-
-	cfg.DisableIPv6 = true
-	cfg.SetListenAddr("210.125.31.176:" + strconv.Itoa(port))
-
-	//cfg.SetListenAddr("210.125.31.176:" + strconv.Itoa(port))
+	cfg.ListenPort = port
 
 	// 토렌트 클라이언트 생성
 	cl, err := torrent.NewClient(cfg)

@@ -3,7 +3,6 @@ module github.com/juncheoll/triton-torrent
 go 1.21.5
 
 require (
-	github.com/ahr-i/triton-agent v0.0.0-20240229015622-18cfd7c8cf2a
 	github.com/anacrolix/torrent v1.55.0
 	github.com/gorilla/mux v1.8.1
 	github.com/rs/cors v1.10.1
